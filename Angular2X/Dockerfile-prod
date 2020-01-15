@@ -1,0 +1,32 @@
+# Stage para build
+
+FROM node:latest as build
+
+RUN apt-get update
+
+WORKDIR /app
+
+ENV PATH /app/node_modules/.bin:$PATH
+
+COPY package.json /app/package.json
+RUN npm install
+RUN npm install -g @angular/cli
+
+COPY . /app
+
+# Se necessario, descomentar essas linhas para executar os testes e impedir que  container rode caso haja algum problema com os testes
+
+#RUN ng test --watch=false
+#RUN ng e2e --port 4202
+
+# Geracao de build
+RUN ng build --output-path=dist --prod=true
+
+# Stage de producao
+FROM nginx:alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

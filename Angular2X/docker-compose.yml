@@ -1,0 +1,16 @@
+# Comando para executar
+# Comando para executar
+# sudo docker-compose -f docker-compose.yml up -d --build
+version: '3'
+
+services:
+  speed_serv:
+    container_name: speed_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    ports:
+      - '4201:4200'

@@ -1,0 +1,12 @@
+# Comando para executar
+# sudo docker-compose -f docker-compose-prod.yml up -d --build
+version: '3'
+
+services:
+  speed_serv:
+    container_name: speed_cont_prod
+    build:
+      context: .
+      dockerfile: Dockerfile-prod
+    ports:
+      - '80:80'
