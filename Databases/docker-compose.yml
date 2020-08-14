@@ -1,0 +1,79 @@
+version: '3.4'
+
+services:
+ postgres:
+  image: postgres
+  container_name: postgres_db
+  environment:
+   POSTGRES_PASSWORD: "123456"
+  ports:
+   - "5432:5432"
+  networks:
+   - devnetwork
+  volumes:
+   - /home/maximillianfx/Development/Databases/PostgresData:/var/lib/postgresql/data
+
+ pgadmin:
+  image: dpage/pgadmin4
+  container_name: pgadmin
+  environment:
+   PGADMIN_DEFAULT_EMAIL: "maximillianfx@gmail.com"
+   PGADMIN_DEFAULT_PASSWORD: "123456"
+  ports:
+   - "8080:80"
+  networks:
+   - devnetwork
+
+ mongo:
+  image: mongo:4.2.6
+  container_name: mongo_db
+  ports:
+   - "27017:27017"
+  networks:
+   - devnetwork
+  volumes:
+   - /home/maximillianfx/Development/Databases/MongoData:/data/db
+
+ mongoexpress:
+  image: mongo-express
+  container_name: mongoexpress
+  environment:
+   ME_CONFIG_MONGODB_SERVER: "mongo_db"
+  ports:
+   - "8081:8081"
+  networks:
+   - devnetwork
+  depends_on:
+   - mongo
+
+ mysql:
+  image: mysql
+  container_name: mysql_db
+  environment:
+   MYSQL_ROOT_PASSWORD: "123456"
+  ports:
+   - "3306:3306"
+  networks:
+   - devnetwork
+  volumes:
+   - /home/maximillianfx/Development/Databases/MySQLData:/var/lib/mysql
+
+ phpmyadmin:
+  image: phpmyadmin/phpmyadmin
+  container_name: phpmyadmin
+  environment:
+   PMA_HOST: "mysql_db"
+   PMA_PORT: "3306"
+   PMA_ARBITRARY: "1"
+   MYSQL_ROOT_PASSWORD: "123456"
+   MYSQL_USER: "root"
+  ports:
+   - "3010:80"
+  networks:
+   - devnetwork
+  depends_on:
+   - mysql
+
+networks:
+ devnetwork:
+  external: true
